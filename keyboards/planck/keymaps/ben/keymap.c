@@ -12,6 +12,10 @@ enum planck_layers {
   _ADJUST,
 };
 
+enum custom_keycodes {
+  ARROW = SAFE_RANGE,
+};
+
 #define LOWER MO(_LOWER)
 #define RAISE MO(_RAISE)
 #define NUMPAD MO(_NUMPAD)
@@ -42,7 +46,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * ,-----------------------------------------------------------------------------------.
  * |   ~  |   !  |   @  |   #  |   $  |   %  |   ^  |   &  |   *  |   (  |   )  | Bksp |
  * |------+------+------+------+------+-------------+------+------+------+------+------|
- * | Del  |      |      |      |      |      |      |   _  |   +  |   {  |   }  |  |   |
+ * | Del  |      |      |      |      |      |  ->  |   _  |   +  |   {  |   }  |  |   |
  * |------+------+------+------+------+------|------+------+------+------+------+------|
  * |      |      |      |      |      |NUMPAD|      |      |      |      |      | Home |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
@@ -51,7 +55,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 [_LOWER] = LAYOUT_planck_grid(
     KC_TILD, KC_EXLM, KC_AT,   KC_HASH, KC_DLR,  KC_PERC, KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_BSPC,
-    KC_DEL,  _______, _______, _______, _______, _______, _______, KC_UNDS, KC_PLUS, KC_LCBR, KC_RCBR, KC_PIPE,
+    KC_DEL,  _______, _______, _______, _______, _______, ARROW,   KC_UNDS, KC_PLUS, KC_LCBR, KC_RCBR, KC_PIPE,
     _______, _______, _______, _______, _______, NUMPAD,  _______, _______, _______, _______, _______, KC_HOME,
     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, KC_ENT
 ),
@@ -131,5 +135,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 uint32_t layer_state_set_user(uint32_t state) {
   return update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
+}
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  switch(keycode) {
+    case ARROW:
+      if (record->event.pressed) {
+	SEND_STRING("->");
+      }
+      break;
+  }
+  return true;
 }
 
